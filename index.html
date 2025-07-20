@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>החתונה של דוד ואסתי</title>
+
+    <!-- META TAGS FOR SOCIAL SHARING -->
+    <meta property="og:title" content="החתונה של דוד ואסתי">
+    <meta property="og:description" content="סופרים את הרגעים עד לחופה! 30.10.2025">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://pinywinner.github.io/COUNTDOWN/">
+    <meta property="og:image" content="https://i.ibb.co/TDLcSmvr/1.png">
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Google Fonts: Anton -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Anton&display=swap" rel="stylesheet">
+
+    <!-- Canvas Confetti Library -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
+
+    <style>
+        /* Base body styles */
+        body {
+            font-family: 'Anton', sans-serif;
+            background-color: #DDAAFF;
+            color: #000000;
+            letter-spacing: 0.025em;
+            background-image: linear-gradient(45deg, rgba(0,0,0,0.06) 25%, transparent 25%, transparent 50%, rgba(0,0,0,0.06) 50%, rgba(0,0,0,0.06) 75%, transparent 75%, transparent);
+            background-size: 30px 30px;
+            overflow-x: hidden;
+        }
+
+        /* Custom brutalist shadow effect */
+        .brutal-shadow {
+            box-shadow: 8px 8px 0px #000000;
+        }
+
+        /* Countdown numbers styling */
+        .countdown-number {
+            font-weight: 400;
+            color: #FF0000;
+            line-height: 1;
+            text-shadow: 2px 2px 0px rgba(0,0,0,0.2);
+        }
+
+        /* Labels styling */
+        .label-text {
+            letter-spacing: 0.05em;
+        }
+
+        /* General transition */
+        .transition-transform {
+            transition: transform 0.2s ease-in-out;
+        }
+
+        /* Full-screen canvas for background effects */
+        #confetti-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        /* Pop animation for countdown updates */
+        @keyframes pop {
+            50% { transform: scale(1.2); }
+        }
+        .animate-pop {
+            animation: pop 0.4s ease-in-out;
+        }
+
+        /* Header flip animation styles */
+        .header-wrapper {
+            perspective: 1000px;
+            min-height: 150px;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .header-flipper {
+            transition: transform 1.5s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+            transform-style: preserve-3d;
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+        .header-flipper.is-flipped {
+            transform: rotateY(180deg);
+        }
+        .header-front, .header-back {
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .header-back {
+            transform: rotateY(180deg);
+        }
+    </style>
+</head>
+<body class="flex items-center justify-center min-h-screen px-4 py-8 md:py-12">
+
+    <canvas id="confetti-canvas"></canvas>
+
+    <div class="w-full max-w-5xl mx-auto flex flex-col md:flex-row gap-8 md:gap-12 items-center">
+        
+        <!-- Image Section -->
+        <div class="w-full max-w-sm order-2 md:order-1">
+            <div class="bg-white p-3 pb-12 relative border-8 border-black brutal-shadow transform -rotate-3 hover:scale-105 hover:rotate-2 transition-transform">
+                <img src="https://i.ibb.co/TDLcSmvr/1.png" alt="דוד ואסתי" class="w-full h-auto" onerror="this.onerror=null; this.src='https://placehold.co/400x500/DDAAFF/000000?text=תמונה';">
+            </div>
+        </div>
+
+        <!-- Content Section -->
+        <div class="text-center flex flex-col items-center justify-between order-1 md:order-2 w-full">
+            
+            <!-- Header with Flip Animation -->
+            <div class="header-wrapper mb-6 transform -rotate-2 hover:scale-105">
+                <div id="header-flipper" class="header-flipper">
+                    <!-- Front Side -->
+                    <div class="header-front">
+                        <div class="bg-white py-3 px-4 border-8 border-black brutal-shadow">
+                            <h2 class="text-xl sm:text-2xl leading-tight">החתונה של</h2>
+                            <h1 class="text-4xl sm:text-5xl text-black my-1 flex items-center justify-center">
+                                דוד <span class="mx-2 text-5xl">&</span> אסתי
+                            </h1>
+                            <p class="text-md sm:text-lg mt-2 tracking-widest">בעוד:</p>
+                        </div>
+                    </div>
+                    <!-- Back Side -->
+                    <div class="header-back">
+                           <div class="bg-white py-3 px-4 border-8 border-black brutal-shadow">
+                                <h1 class="text-5xl sm:text-6xl text-black my-4 px-8">מזל טוב!</h1>
+                            </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Countdown Timer -->
+            <main id="countdown-container" class="grid grid-cols-2 gap-8 mb-6 w-full">
+                <div id="days-box" class="bg-white rounded-none p-3 border-8 border-black brutal-shadow transform rotate-2 hover:scale-110 transition-transform">
+                    <div id="days" class="text-4xl sm:text-5xl countdown-number">00</div>
+                    <div class="text-sm sm:text-base font-bold mt-1 label-text">ימים</div>
+                </div>
+                <div id="hours-box" class="bg-white rounded-none p-3 border-8 border-black brutal-shadow transform -rotate-2 hover:scale-110 transition-transform">
+                    <div id="hours" class="text-4xl sm:text-5xl countdown-number">00</div>
+                    <div class="text-sm sm:text-base font-bold mt-1 label-text">שעות</div>
+                </div>
+                <div id="minutes-box" class="bg-white rounded-none p-3 border-8 border-black brutal-shadow transform rotate-1 hover:scale-110 transition-transform">
+                    <div id="minutes" class="text-4xl sm:text-5xl countdown-number">00</div>
+                    <div class="text-sm sm:text-base font-bold mt-1 label-text">דקות</div>
+                </div>
+                <div id="seconds-box" class="bg-white rounded-none p-3 border-8 border-black brutal-shadow transform -rotate-1 hover:scale-110 transition-transform">
+                    <div id="seconds" class="text-4xl sm:text-5xl countdown-number">00</div>
+                    <div class="text-sm sm:text-base font-bold mt-1 label-text">שניות</div>
+                </div>
+            </main>
+            
+            <!-- Footer with Date -->
+            <footer id="footer-message" class="transform transition-transform hover:scale-105 rotate-1">
+                   <p class="text-base sm:text-lg font-bold bg-black text-yellow-400 inline-block py-2 px-4">30.10.2025 | ח' חשון תשפ"ו | 18:30</p>
+            </footer>
+        </div>
+    </div>
+
+    <script>
+        window.onload = function() {
+            // Use a try-catch block to prevent a single error from breaking the entire page.
+            try {
+                const flipper = document.getElementById('header-flipper');
+                const confettiCanvas = document.getElementById('confetti-canvas');
+                
+                // Ensure confetti library is loaded before using it
+                if (typeof confetti === 'undefined') {
+                    console.error('Confetti library not loaded.');
+                    return;
+                }
+                const myConfetti = confetti.create(confettiCanvas, { resize: true });
+
+                /**
+                 * Starts the countdown timer.
+                 * Calculates and updates the time remaining until the wedding date.
+                 */
+                function startCountdown() {
+                    const countdownDate = new Date("2025-10-30T18:30:00").getTime();
+                    
+                    // NEW: Check if the date is valid. If not, stop the function.
+                    if (isNaN(countdownDate)) {
+                        console.error("Invalid countdown date provided.");
+                        document.getElementById('countdown-container').innerText = "שגיאה בתאריך.";
+                        return;
+                    }
+
+                    const elements = {
+                        days: document.getElementById('days'),
+                        hours: document.getElementById('hours'),
+                        minutes: document.getElementById('minutes'),
+                        seconds: document.getElementById('seconds'),
+                        daysBox: document.getElementById('days-box'),
+                        hoursBox: document.getElementById('hours-box'),
+                        minutesBox: document.getElementById('minutes-box'),
+                        secondsBox: document.getElementById('seconds-box'),
+                        container: document.getElementById('countdown-container'),
+                        footer: document.getElementById('footer-message')
+                    };
+
+                    // NEW: Check if all required elements exist before starting the timer.
+                    if (Object.values(elements).some(el => !el)) {
+                        console.error('One or more countdown elements are missing from the DOM.');
+                        return;
+                    }
+
+                    let prev = {}; // To store previous values for animation trigger
+
+                    const interval = setInterval(() => {
+                        const now = new Date().getTime();
+                        const distance = countdownDate - now;
+
+                        if (distance < 0) {
+                            clearInterval(interval);
+                            elements.container.innerHTML = `<div class="col-span-2 bg-white p-6 border-8 border-black brutal-shadow"><h2 class="text-4xl text-[#FF0000]">החופה החלה.</h2></div>`;
+                            if (elements.footer) elements.footer.innerHTML = '<p class="text-xl font-bold bg-black text-yellow-400 inline-block p-4">מזל טוב!</p>';
+                            return;
+                        }
+
+                        const time = {
+                            days: Math.floor(distance / (1000 * 60 * 60 * 24)),
+                            hours: Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)),
+                            minutes: Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60)),
+                            seconds: Math.floor((distance % (1000 * 60)) / 1000)
+                        };
+
+                        // Update DOM and trigger animations
+                        if (time.seconds !== prev.seconds) {
+                            elements.secondsBox.classList.add('animate-pop');
+                            setTimeout(() => elements.secondsBox.classList.remove('animate-pop'), 400);
+                        }
+                        if (time.minutes !== prev.minutes) {
+                            elements.minutesBox.classList.add('animate-pop');
+                            setTimeout(() => elements.minutesBox.classList.remove('animate-pop'), 400);
+                        }
+                        if (time.hours !== prev.hours) {
+                            elements.hoursBox.classList.add('animate-pop');
+                            setTimeout(() => elements.hoursBox.classList.remove('animate-pop'), 400);
+                        }
+                        if (time.days !== prev.days) {
+                            elements.daysBox.classList.add('animate-pop');
+                            setTimeout(() => elements.daysBox.classList.remove('animate-pop'), 400);
+                        }
+                        
+                        prev = time; // Update previous values
+                        elements.days.innerText = String(time.days).padStart(2, '0');
+                        elements.hours.innerText = String(time.hours).padStart(2, '0');
+                        elements.minutes.innerText = String(time.minutes).padStart(2, '0');
+                        elements.seconds.innerText = String(time.seconds).padStart(2, '0');
+
+                    }, 1000);
+                }
+
+                // --- Welcome Animation Logic ---
+                if (!sessionStorage.getItem('hasVisited')) {
+                    sessionStorage.setItem('hasVisited', 'true');
+                    
+                    if(flipper) flipper.classList.add('is-flipped');
+                    
+                    setTimeout(() => {
+                        myConfetti({ particleCount: 150, spread: 90, origin: { y: 0.1 } });
+                    }, 200);
+
+                    setTimeout(() => {
+                        if(flipper) flipper.classList.remove('is-flipped');
+                    }, 1000);
+
+                    setTimeout(startCountdown, 2500);
+                } else {
+                    startCountdown();
+                }
+
+                // --- Background Particle Animation ---
+                const ctx = confettiCanvas.getContext('2d');
+                confettiCanvas.width = window.innerWidth;
+                confettiCanvas.height = window.innerHeight;
+                let particles = [];
+                const particleCount = 70;
+                const colors = ["rgba(0,0,0,0.3)", "rgba(0,0,0,0.5)", "#FFD700", "#FF69B4", "#8A2BE2"];
+
+                function Particle(x, y, size, shape, color, speed) {
+                    this.x = x; this.y = y; this.size = size; this.shape = shape; this.color = color; this.speed = speed; this.rotation = Math.random() * 360;
+                }
+
+                Particle.prototype.draw = function() {
+                    ctx.save(); ctx.translate(this.x, this.y); ctx.rotate(this.rotation * Math.PI / 180); ctx.fillStyle = this.color;
+                    const shapes = {
+                        square: () => ctx.fillRect(-this.size / 2, -this.size / 2, this.size, this.size),
+                        line: () => ctx.fillRect(-this.size / 2, -1, this.size, 2),
+                        circle: () => { ctx.beginPath(); ctx.arc(0, 0, this.size / 2, 0, Math.PI * 2); ctx.fill(); },
+                        triangle: () => { ctx.beginPath(); ctx.moveTo(0, -this.size / 2); ctx.lineTo(this.size / 2, this.size / 2); ctx.lineTo(-this.size / 2, this.size / 2); ctx.closePath(); ctx.fill(); }
+                    };
+                    (shapes[this.shape] || shapes['circle'])();
+                    ctx.restore();
+                };
+
+                Particle.prototype.update = function() {
+                    this.y += this.speed; this.rotation += this.speed / 2;
+                    if (this.y > confettiCanvas.height + this.size) { this.y = -this.size; this.x = Math.random() * confettiCanvas.width; }
+                };
+
+                function initParticles() {
+                    particles = [];
+                    const shapes = ['square', 'line', 'circle', 'triangle'];
+                    for (let i = 0; i < particleCount; i++) {
+                        const x = Math.random() * confettiCanvas.width; const y = Math.random() * confettiCanvas.height; const size = Math.random() * 15 + 5;
+                        const shape = shapes[Math.floor(Math.random() * shapes.length)]; const color = colors[Math.floor(Math.random() * colors.length)];
+                        const speed = Math.random() * 0.5 + 0.1;
+                        particles.push(new Particle(x, y, size, shape, color, speed));
+                    }
+                }
+
+                function animate() {
+                    ctx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
+                    particles.forEach(p => { p.update(); p.draw(); });
+                    requestAnimationFrame(animate);
+                }
+
+                initParticles();
+                animate();
+
+                window.addEventListener('resize', () => {
+                    confettiCanvas.width = window.innerWidth; confettiCanvas.height = window.innerHeight; initParticles();
+                });
+
+            } catch (error) {
+                console.error("An error occurred while initializing the page:", error);
+                // Optionally display an error message to the user
+                document.body.innerHTML = '<div style="text-align: center; padding: 50px; font-size: 24px;">אופס, משהו השתבש. נסו לרענן את הדף.</div>';
+            }
+        };
+    </script>
+
+</body>
+</html>
